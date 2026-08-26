@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi Campaign — Admin OpenDonasi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Montserrat', sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+  <div class="flex min-h-screen">
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
+      <div class="p-6 border-b border-gray-800">
+        <h1 class="font-heading text-xl font-extrabold">
+          Open<span class="text-cyan-400">Donasi</span>
+        </h1>
+        <p class="text-gray-500 text-xs mt-1">Admin Panel</p>
+      </div>
+
+      <nav class="flex-1 p-4 space-y-1">
+        <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition text-sm">
+          <span>📊</span> Dashboard
+        </a>
+        <a href="/admin/verify-campaign" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-cyan-500/10 text-cyan-400 font-medium text-sm">
+          <span>🎯</span> Verifikasi Campaign
+        </a>
+        <a href="/admin/verify-donation" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition text-sm">
+          <span>💳</span> Verifikasi Donasi
+        </a>
+        <a href="/admin/transfer-dana" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition text-sm">
+          <span>💰</span> Transfer Dana
+        </a>
+        <a href="/admin/verify-report" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition text-sm">
+          <span>📋</span> Verifikasi Laporan
+        </a>
+        <a href="/admin/manage-users" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition text-sm">
+          <span>👥</span> Kelola User
+        </a>
+      </nav>
+
+      <div class="p-4 border-t border-gray-800">
+        <a href="/admin/logout" class="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition text-sm">
+          🚪 Keluar
+        </a>
+      </div>
+    </aside>
+
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="flex-1 flex flex-col">
+      <!-- Top Bar -->
+      <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+        <h2 class="font-heading text-lg font-bold text-gray-900">Verifikasi Campaign</h2>
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-gray-500">Selamat datang,</span>
+          <span class="text-sm font-semibold text-gray-900">Admin</span>
+          <div class="w-8 h-8 rounded-full bg-cyan-500 text-white flex items-center justify-center text-xs font-bold">A</div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="flex-1 p-8">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="font-heading text-2xl font-bold text-gray-900">Campaign Menunggu Verifikasi</h3>
+            <p class="text-gray-500 text-sm mt-1">Setujui atau tolak campaign yang diajukan oleh penggalang dana.</p>
+          </div>
+          <span class="px-4 py-2 bg-amber-100 text-amber-700 text-sm font-semibold rounded-full">
+            {{len .Campaigns}} Pending
+          </span>
+        </div>
+
+        {{if .Campaigns}}
+        <!-- Campaign Table -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Judul Campaign</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Target Dana</th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori</th>
+                <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              {{range $index, $campaign := .Campaigns}}
+              <tr class="hover:bg-gray-50 transition">
+                <td class="px-6 py-4 text-sm text-gray-500 font-medium">{{add $index 1}}</td>
+                <td class="px-6 py-4">
+                  <div class="text-sm font-semibold text-gray-900">{{$campaign.Title}}</div>
+                  <div class="text-xs text-gray-400 mt-0.5">ID: {{$campaign.ID}} · {{$campaign.LokasiKejadian}}</div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm font-bold text-cyan-600">Rp {{formatRupiah $campaign.TargetDana}}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">{{$campaign.Category}}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-center gap-2">
+                    <form method="POST" action="/admin/verify-campaign/{{$campaign.ID}}/approve" style="display:inline;">
+                      <button type="submit" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold rounded-lg transition shadow-sm hover:shadow-md">
+                        ✅ Setujui
+                      </button>
+                    </form>
+                    <form method="POST" action="/admin/verify-campaign/{{$campaign.ID}}/reject" style="display:inline;">
+                      <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition shadow-sm hover:shadow-md">
+                        ❌ Tolak
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+        {{else}}
+        <!-- Empty State -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-12 text-center">
+          <div class="text-5xl mb-4">🎉</div>
+          <h4 class="font-heading text-lg font-bold text-gray-900 mb-2">Semua Bersih!</h4>
+          <p class="text-gray-400 text-sm">Tidak ada campaign yang menunggu verifikasi saat ini.</p>
+        </div>
+        {{end}}
+      </div>
+    </main>
+  </div>
+</body>
+</html>
