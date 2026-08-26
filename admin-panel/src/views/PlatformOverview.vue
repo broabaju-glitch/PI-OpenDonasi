@@ -669,8 +669,6 @@ onMounted(fetchAll)
   margin-top: 1px;
 }
 
-.td-donor {}
-
 .donor-chip {
   display: flex;
   align-items: center;
